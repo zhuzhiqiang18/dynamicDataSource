@@ -21,16 +21,32 @@ public class AppTest {
     private UserService userService;
 
     @Test
-    public void test() throws Exception {
+    public void save() throws Exception {
+        for (int i=0;i<10;i++){
+            User user = new User();
+            long id= IdUtil.getId();
+            user.setId(id);
+            user.setUserName("zzq"+i);
+            user.setPassWord("zzq"+i);
+            System.out.println(userService.save(id,user));
+        }
+
+    }
+    @Test
+    public void update() throws Exception {
         User user = new User();
-        long id= 5l;
-        user.setId(5l);
-        user.setUserName("zzq");
-        user.setPassWord("zzq");
-        System.out.println(userService.save(id,user));
+        long id= 19061298447915L;
+        user.setId(id);
+        user.setUserName("zzqzzq");
+        user.setPassWord("zzqzzq");
+        System.out.println(userService.update(id,user));
     }
 
-    /*public static void main(String[] args) {
-        System.out.println(5%3);
-    }*/
+    @Test
+    public void delete() throws Exception {
+        User user = new User();
+        long id= 19061298766897L;
+        System.out.println(userService.delete(id));
+    }
+
 }

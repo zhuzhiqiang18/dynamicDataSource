@@ -11,7 +11,7 @@ import javax.sound.midi.Soundbank;
 public class DynamicDataSource extends AbstractRoutingDataSource {
     @Override
     protected Object determineCurrentLookupKey() {
-        System.out.println("切换DataSource");
+        System.out.println("数据库=="+DynamicDataSourceContextHolder.getDataSourceType());
         return DynamicDataSourceContextHolder.getDataSourceType();
     }
 }

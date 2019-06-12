@@ -21,12 +21,13 @@ class DynamicDataSourceAspect {
     //改变数据源
     @Before("cut()")
     public void changeDataSource(JoinPoint joinPoint) {
+        System.out.println(this);
         Object[] obj= joinPoint.getArgs();
         if(obj!=null&&obj.length>0){
             if(obj[0] instanceof Long){
               long database=  Long.parseLong(obj[0].toString())%3;
               database=database==0?++database:database;
-                DynamicDataSourceContextHolder.setDataSourceType("d"+database);
+              DynamicDataSourceContextHolder.setDataSourceType("d"+database);
             }
         }
        // String dbid = targetDataSource.name();
