@@ -8,6 +8,7 @@ import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
