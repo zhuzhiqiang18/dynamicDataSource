@@ -12,7 +12,7 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from user
+    from {0}
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
@@ -20,7 +20,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.zzq.model.User" >
-    insert into user (id, user_name, pass_word
+    insert into {0} (id, user_name, pass_word
       )
     values (#{id,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR}, #{passWord,jdbcType=VARCHAR}
       )

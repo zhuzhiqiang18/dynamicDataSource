@@ -49,4 +49,11 @@ public class AppTest {
         System.out.println(userService.delete(id));
     }
 
+    @Test
+    public void select() throws Exception {
+        User user = new User();
+        long id= 3L;
+        System.out.println(userService.select(id).toString());
+    }
+
 }
