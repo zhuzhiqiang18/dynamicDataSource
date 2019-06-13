@@ -6,6 +6,7 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Component;
 @Order(-1)//保证在@Transactional之前执行
 @Component
 class DynamicDataSourceAspect {
+    @Autowired
+    DynamicDataConfig dynamicDataConfig;
 
     private Logger logger = Logger.getLogger(DynamicDataSourceAspect.class);
 
@@ -25,9 +28,8 @@ class DynamicDataSourceAspect {
         Object[] obj= joinPoint.getArgs();
         if(obj!=null&&obj.length>0){
             if(obj[0] instanceof Long){
-              long database=  Long.parseLong(obj[0].toString())%3;
-              database=database==0?++database:database;
-              DynamicDataSourceContextHolder.setDataSourceType("d"+database);
+              long database=  Long.parseLong(obj[0].toString())%dynamicDataConfig.sub_database_num;
+              DynamicDataSourceContextHolder.setDataSourceType("d"+ ++database);
             }
         }
        // String dbid = targetDataSource.name();

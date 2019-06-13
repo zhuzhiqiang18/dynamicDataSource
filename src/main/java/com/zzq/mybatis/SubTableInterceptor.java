@@ -1,6 +1,9 @@
 package com.zzq.mybatis;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zzq.annotation.SubDatabaseTable;
+import com.zzq.dynamic.dataSource.DynamicDataConfig;
 import com.zzq.dynamic.dataSource.DynamicDataSource;
 import com.zzq.dynamic.dataSource.DynamicDataSourceContextHolder;
 import org.apache.ibatis.cache.CacheKey;
@@ -19,16 +22,16 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.MessageFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * 分表拦截器
@@ -37,6 +40,8 @@ import java.util.Properties;
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class SubTableInterceptor implements Interceptor {
     private static final Logger log = LoggerFactory.getLogger(SubTableInterceptor.class);
+    @Autowired
+    DynamicDataConfig dynamicDataConfig;
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -53,18 +58,52 @@ public class SubTableInterceptor implements Interceptor {
         MappedStatement mappedStatement = (MappedStatement) metaObject.getValue("delegate.mappedStatement");
         //id为执行的mapper方法的全路径名，如com.uv.dao.UserMapper.insertUser
         String id = mappedStatement.getId();
+
         //sql语句类型 select、delete、insert、update
         String sqlCommandType = mappedStatement.getSqlCommandType().toString();
         //数据库连接信息
         Configuration configuration = mappedStatement.getConfiguration();
        // DynamicDataSource dataSource = (DynamicDataSource) configuration.getEnvironment().getDataSource();
 
-        System.out.println(DynamicDataSourceContextHolder.getDataSourceType());
+        //System.out.println(DynamicDataSourceContextHolder.getDataSourceType());
+
+
+        Class<?> classType = Class.forName(mappedStatement.getId().substring(0,mappedStatement.getId().lastIndexOf(".")));
+        String mName  = mappedStatement.getId().substring(mappedStatement.getId().lastIndexOf(".") + 1 ,mappedStatement.getId().length());
+        //此处获取ID 用于确定库 表
+        long ID=0L;
+        try {
+            if(boundSql.getParameterObject() instanceof  Long){
+                ID= (Long) boundSql.getParameterObject();
+            }else if(boundSql.getParameterObject() instanceof Map){
+                ID = (Long) ((Map) boundSql.getParameterObject()).get("id");
+            }else if(boundSql.getParameterObject() instanceof Object){
+                ObjectMapper mapper = new ObjectMapper();
+                String json= mapper.writeValueAsString(boundSql.getParameterObject());
+                Map <String,Object> map = mapper.readValue(json,Map.class);
+                ID= (long) map.get("id");
+            }
+        }catch (Exception e){
+            throw new RuntimeException("【请遵从约定优于配置】"+e.getMessage());
+        }
+
+        String schem="";
+        for(Method method: classType.getDeclaredMethods()){
+            if(method.isAnnotationPresent(SubDatabaseTable.class)&&method.getName().equals(mName)){
+                SubDatabaseTable subDatabaseTable= method.getAnnotation(SubDatabaseTable.class);
+                String dataBase=subDatabaseTable.dataBaseName();
+                String tablename=subDatabaseTable.tableName();
+                long dataBaseIndex= ID%dynamicDataConfig.sub_database_num+1;
+                long tableNameIndex=ID%dynamicDataConfig.sub_table_num+1;
+                schem=dataBase+dataBaseIndex+"."+tablename+"_"+tableNameIndex;
+                continue;
+            }
+        }
 
         //通过反射改写sql
         Field field = boundSql.getClass().getDeclaredField("sql");
         field.setAccessible(true);
-        String mSql = MessageFormat.format(boundSql.getSql(), "user_1");
+        String mSql = MessageFormat.format(boundSql.getSql(), schem);
         field.set(boundSql, mSql);
         Object returnVal = invocation.proceed();
 

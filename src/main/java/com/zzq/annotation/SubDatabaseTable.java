@@ -2,6 +2,7 @@ package com.zzq.annotation;
 
 import javax.validation.constraints.NotNull;
 import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -13,10 +14,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Target(METHOD)
 @Retention(RUNTIME)
+@Inherited
 @Documented
-public @interface DatabaseTable {
+public @interface SubDatabaseTable {
     @NotNull
-    String databaseName();
+    String dataBaseName();
     @NotNull
     String tableName();
 }

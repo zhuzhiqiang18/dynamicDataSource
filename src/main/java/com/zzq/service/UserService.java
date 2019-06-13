@@ -7,4 +7,6 @@ public interface UserService {
     public User select(Long id);
     public int update(Long id, User user);
     public int delete(Long id);
+
+    public int updateUser(Long id,String userName,String PassWord);
 }

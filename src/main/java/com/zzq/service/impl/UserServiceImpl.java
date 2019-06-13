@@ -30,4 +30,10 @@ public class UserServiceImpl implements UserService {
     public int delete(Long id) {
         return userMapper.deleteByPrimaryKey(id);
     }
+
+    @Override
+    public int updateUser(Long id, String userName, String PassWord) {
+        return userMapper.updateName(id, userName, PassWord);
+    }
+
 }

@@ -56,4 +56,11 @@ public class AppTest {
         System.out.println(userService.select(id).toString());
     }
 
+    @Test
+    public void updateNam() throws Exception {
+        User user = new User();
+        long id= 3L;
+        System.out.println(userService.updateUser(3L,"123","123"));
+    }
+
 }
