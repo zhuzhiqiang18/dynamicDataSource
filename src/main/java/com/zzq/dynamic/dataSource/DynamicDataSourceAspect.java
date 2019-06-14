@@ -24,7 +24,6 @@ class DynamicDataSourceAspect {
     //改变数据源
     @Before("cut()")
     public void changeDataSource(JoinPoint joinPoint) {
-        System.out.println(this);
         Object[] obj= joinPoint.getArgs();
         if(obj!=null&&obj.length>0){
             if(obj[0] instanceof Long){

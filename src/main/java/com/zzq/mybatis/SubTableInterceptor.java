@@ -96,7 +96,7 @@ public class SubTableInterceptor implements Interceptor {
                 long dataBaseIndex= ID%dynamicDataConfig.sub_database_num+1;
                 long tableNameIndex=ID%dynamicDataConfig.sub_table_num+1;
                 schem=dataBase+dataBaseIndex+"."+tablename+"_"+tableNameIndex;
-                continue;
+                break;
             }
         }
 
