@@ -20,6 +20,10 @@ public class AppTest {
     @Autowired
     private UserService userService;
 
+    /**
+     * 单个参数实体解析ID
+     * @throws Exception
+     */
     @Test
     public void save() throws Exception {
         for (int i=0;i<10;i++){
@@ -32,6 +36,10 @@ public class AppTest {
         }
 
     }
+    /**
+     * 单个参数实体解析ID
+     * @throws Exception
+     */
     @Test
     public void update() throws Exception {
         User user = new User();
@@ -42,6 +50,10 @@ public class AppTest {
         System.out.println(userService.update(id,user));
     }
 
+    /**
+     * 单个参数解析ID
+     * @throws Exception
+     */
     @Test
     public void delete() throws Exception {
         User user = new User();
@@ -49,6 +61,10 @@ public class AppTest {
         System.out.println(userService.delete(id));
     }
 
+    /**
+     * 单个参数解析ID
+     * @throws Exception
+     */
     @Test
     public void select() throws Exception {
         User user = new User();
@@ -56,6 +72,10 @@ public class AppTest {
         System.out.println(userService.select(id).toString());
     }
 
+    /**
+     * 测试多个参数 解析ID
+     * @throws Exception
+     */
     @Test
     public void updateNam() throws Exception {
         User user = new User();

@@ -56,4 +56,77 @@ dynamic.datasource.type=com.alibaba.druid.pool.DruidDataSource
     int insertSelective(User record);
 ```
     
-    
+###单元测试
+```java
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class AppTest {
+    @Autowired
+    private UserService userService;
+
+    /**
+     * 单个参数实体解析ID
+     * @throws Exception
+     */
+    @Test
+    public void save() throws Exception {
+        for (int i=0;i<10;i++){
+            User user = new User();
+            long id= IdUtil.getId();
+            user.setId(id);
+            user.setUserName("zzq"+i);
+            user.setPassWord("zzq"+i);
+            System.out.println(userService.save(id,user));
+        }
+
+    }
+    /**
+     * 单个参数实体解析ID
+     * @throws Exception
+     */
+    @Test
+    public void update() throws Exception {
+        User user = new User();
+        long id= 19061298447915L;
+        user.setId(id);
+        user.setUserName("zzqzzq");
+        user.setPassWord("zzqzzq");
+        System.out.println(userService.update(id,user));
+    }
+
+    /**
+     * 单个参数解析ID
+     * @throws Exception
+     */
+    @Test
+    public void delete() throws Exception {
+        User user = new User();
+        long id= 19061298766897L;
+        System.out.println(userService.delete(id));
+    }
+
+    /**
+     * 单个参数解析ID
+     * @throws Exception
+     */
+    @Test
+    public void select() throws Exception {
+        User user = new User();
+        long id= 3L;
+        System.out.println(userService.select(id).toString());
+    }
+
+    /**
+     * 测试多个参数 解析ID
+     * @throws Exception
+     */
+    @Test
+    public void updateNam() throws Exception {
+        User user = new User();
+        long id= 3L;
+        System.out.println(userService.updateUser(3L,"123","123"));
+    }
+
+}
+
+```
